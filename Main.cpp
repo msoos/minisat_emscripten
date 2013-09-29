@@ -296,29 +296,17 @@ int main(int argc, char** argv)
     double cpu_time = cpuTime();
 
     solver = &S;
-    signal(SIGINT,SIGINT_handler);
-    signal(SIGHUP,SIGINT_handler);
-
-    if (argc == 1)
-        reportf("Reading from standard input... Use '-h' or '--help' for help.\n");
-
     FILE* in = fopen(argv[1], "rb");
-    if (in == NULL)
-        reportf("ERROR! Could not open file: %s\n", argc == 1 ? "<stdin>" : argv[1]), exit(1);
-
     reportf("============================[ Problem Statistics ]=============================\n");
     reportf("|                                                                             |\n");
 
     parse_DIMACS(in, S);
     fclose(in);
-    FILE* res = (argc >= 3) ? fopen(argv[2], "wb") : NULL;
-
     double parse_time = cpuTime() - cpu_time;
     reportf("|  Parsing time:         %-12.2f s                                       |\n", parse_time);
 
     if (!S.simplify()){
         reportf("Solved by unit propagation\n");
-        if (res != NULL) fprintf(res, "UNSAT\n"), fclose(res);
         printf("UNSATISFIABLE\n");
         exit(20);
     }
@@ -327,19 +315,15 @@ int main(int argc, char** argv)
     printStats(S);
     reportf("\n");
     printf(ret ? "SATISFIABLE\n" : "UNSATISFIABLE\n");
-    if (res != NULL){
-        if (ret){
-            fprintf(res, "SAT\n");
-            for (int i = 0; i < S.nVars(); i++)
-                if (S.model[i] != l_Undef)
-                    fprintf(res, "%s%s%d", (i==0)?"":" ", (S.model[i]==l_True)?"":"-", i+1);
-            fprintf(res, " 0\n");
-        }else
-            fprintf(res, "UNSAT\n");
-        fclose(res);
+    if (ret){
+        printf("v ");
+        for (int i = 0; i < S.nVars(); i++)
+            if (S.model[i] != l_Undef)
+                printf("%s%s%d", (i==0)?"":" ", (S.model[i]==l_True)?"":"-", i+1);
+        printf(" 0\n");
+    }else {
+        printf("UNSAT\n");
     }
 
-#ifdef NDEBUG
-    exit(ret ? 10 : 20);     // (faster than "return", which will invoke the destructor for 'Solver')
-#endif
+    return (ret ? 10 : 20);     // (faster than "return", which will invoke the destructor for 'Solver')
 }
