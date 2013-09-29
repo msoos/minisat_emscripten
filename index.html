@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<style>
+#output
+{
+    padding: 1px;           /*To make sure that the input and the label will not overlap the border, If you remove this line it will not display correctly on Opera 15.0*/
+    border: 1px solid activeborder; /*Create our fake border :D*/
+    background-color: black;
+    font-family:monospace;
+    color: white;
+}
+</style>
+<script type='text/javascript' src="jquery-1.10.2.js"></script>
+
+</head>
+
+<body>
+<textarea rows="4" cols="50" id="mycnf">
+</textarea>
+<br>
+
+<script>
+
+$( document ).ready(function() {
+    $.get("example.cnf", function(data) {
+        document.getElementById("mycnf").value = data;
+    });
+});
+
+var Module = {
+    'print': function(text) {
+        var element = document.getElementById('output');
+        element.innerHTML += text.replace('\n', '<br>', 'g') + '<br>';
+        //console.log(text);
+    }
+};
+</script>
+<script type='text/javascript' src="minisat.js"></script>
+<button id="solve">Solve!</button>
+
+<script type='text/javascript'>
+$("#solve").click(function() {
+    var element = document.getElementById('output');
+    element.innerHTML = ""
+
+    htmlstuff = Module.cwrap('htmlstuff_c', 'int', ['string']);
+    a = htmlstuff(document.getElementById("mycnf").value);
+    console.log(a)
+});
+</script>
+
+<div id="output"></div>
+
+</body>
+
+</html>
+
