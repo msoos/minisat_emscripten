@@ -237,7 +237,7 @@ int main(int argc, char** argv)
     S.verbosity = 1;
 
 
-    int         i, j;
+    /*int         i, j;
     const char* value;
     for (i = j = 0; i < argc; i++){
         if ((value = hasPrefix(argv[i], "-polarity-mode="))){
@@ -284,6 +284,7 @@ int main(int argc, char** argv)
             argv[j++] = argv[i];
     }
     argc = j;
+    */
 
 
     reportf("This is MiniSat 2.0 beta\n");
