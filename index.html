@@ -12,11 +12,10 @@
 }
 </style>
 <script type='text/javascript' src="jquery-1.10.2.js"></script>
-
 </head>
 
 <body>
-<textarea rows="4" cols="50" id="mycnf">
+<textarea rows="20" cols="50" id="mycnf">
 </textarea>
 <br>
 
@@ -29,6 +28,7 @@ $( document ).ready(function() {
 });
 
 var Module = {
+    noInitialRun : true,
     'print': function(text) {
         var element = document.getElementById('output');
         element.innerHTML += text.replace('\n', '<br>', 'g') + '<br>';
