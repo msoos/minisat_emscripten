@@ -255,7 +255,7 @@ inline bool     Solver::okay          ()      const   { return ok; }
 // Debug + etc:
 
 
-#define reportf(format, args...) ( fflush(stdout), fprintf(stderr, format, ## args), fflush(stderr) )
+#define reportf(format, args...) ( fprintf(stdout, format, ## args) )
 
 static inline void logLit(FILE* f, Lit l)
 {
@@ -293,7 +293,7 @@ inline void Solver::printClause(const C& c)
 {
     for (int i = 0; i < c.size(); i++){
         printLit(c[i]);
-        fprintf(stderr, " ");
+        fprintf(stdout, " ");
     }
 }
 

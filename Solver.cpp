@@ -734,7 +734,7 @@ void Solver::checkLiteralCount()
             cnt += clauses[i]->size();
 
     if ((int)clauses_literals != cnt){
-        fprintf(stderr, "literal count: %d, real value = %d\n", (int)clauses_literals, cnt);
+        fprintf(stdout, "literal count: %d, real value = %d\n", (int)clauses_literals, cnt);
         assert((int)clauses_literals == cnt);
     }
 }
