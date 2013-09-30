@@ -156,7 +156,7 @@ static void parse_DIMACS_main(B& in, Solver& S) {
     vec<Lit> lits;
     for (;;){
         skipWhitespace(in);
-        if (*in == EOF)
+        if (*in == EOF || *in =='\0')
             break;
         else if (*in == 'p'){
             if (match(in, "p cnf")){
@@ -179,7 +179,12 @@ static void parse_DIMACS_main(B& in, Solver& S) {
 //
 static void parse_DIMACS(FILE* input_stream, Solver& S) {
     StreamBuffer in(input_stream);
-    parse_DIMACS_main(in, S); }
+    parse_DIMACS_main(in, S);
+}
+
+static void parse_DIMACS(const char* cnfdata, Solver& S) {
+    parse_DIMACS_main(cnfdata, S);
+}
 
 
 //=================================================================================================
