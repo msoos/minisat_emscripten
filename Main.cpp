@@ -235,6 +235,50 @@ const char* hasPrefix(const char* str, const char* prefix)
         return NULL;
 }
 
+int htmlstuff(const char* cnfdata)
+{
+    Solver      S;
+    S.verbosity = 1;
+
+    reportf("This is MiniSat 2.0 beta\n");
+#if defined(__linux__)
+    fpu_control_t oldcw, newcw;
+    _FPU_GETCW(oldcw); newcw = (oldcw & ~_FPU_EXTENDED) | _FPU_DOUBLE; _FPU_SETCW(newcw);
+    reportf("WARNING: for repeatability, setting FPU to use double precision\n");
+#endif
+    double cpu_time = cpuTime();
+
+    solver = &S;
+    reportf("============================[ Problem Statistics ]=============================\n");
+    reportf("|                                                                             |\n");
+
+    parse_DIMACS(cnfdata, S);
+    double parse_time = cpuTime() - cpu_time;
+    reportf("|  Parsing time:         %-12.2f s                                       |\n", parse_time);
+
+    if (!S.simplify()){
+        reportf("Solved by unit propagation\n");
+        printf("UNSATISFIABLE\n");
+        return 20;
+    }
+
+    bool ret = S.solve();
+    printStats(S);
+    reportf("\n");
+    printf(ret ? "SATISFIABLE\n" : "UNSATISFIABLE\n");
+    if (ret){
+        printf("v ");
+        for (int i = 0; i < S.nVars(); i++)
+            if (S.model[i] != l_Undef)
+                printf("%s%s%d", (i==0)?"":" ", (S.model[i]==l_True)?"":"-", i+1);
+        printf(" 0\n");
+    }else {
+        printf("UNSAT\n");
+    }
+
+    return (ret ? 10 : 20);     // (faster than "return", which will invoke the destructor for 'Solver')
+}
+
 
 int main(int argc, char** argv)
 {
@@ -331,4 +375,12 @@ int main(int argc, char** argv)
     }
 
     return (ret ? 10 : 20);     // (faster than "return", which will invoke the destructor for 'Solver')
+}
+
+extern "C" {
+
+int htmlstuff_c(const char* cnfdata) {
+  return htmlstuff(cnfdata);
+}
+
 }
