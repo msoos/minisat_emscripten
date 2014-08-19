@@ -42,11 +42,11 @@ var Module = {
 <script type='text/javascript'>
 $("#solve").click(function() {
     var element = document.getElementById('output');
-    element.innerHTML = ""
+    element.innerHTML = "";
 
     htmlstuff = Module.cwrap('htmlstuff_c', 'int', ['string']);
     a = htmlstuff(document.getElementById("mycnf").value);
-    console.log(a)
+    console.log(a);
 });
 </script>
 
